@@ -1,0 +1,93 @@
+‏<!DOCTYPE html>
+‏<html lang="ar" dir="rtl">
+‏<head>
+‏  <meta charset="utf-8">
+‏  <title>طمأنينة</title>
+‏  <style>
+‏    body { font-family: Arial, sans-serif; background:#f2f7f7; text-align:center; padding:30px; }
+‏    h1 { color:#046b6b; }
+‏    .card { background:#fff; padding:20px; border-radius:10px; max-width:400px; margin:20px auto; box-shadow:0 2px 5px rgba(0,0,0,0.1); }
+‏    button { background:#046b6b; color:#fff; border:none; padding:10px 20px; border-radius:6px; cursor:pointer; margin-top:10px; }
+‏    button:hover { background:#035050; }
+‏    input, select { padding:8px; width:100%; margin:10px 0; border-radius:6px; border:1px solid #ccc; }
+‏    #history { margin-top:20px; }
+‏    #tip { margin-top:15px; font-weight:bold; color:#333; }
+‏  </style>
+‏</head>
+‏<body>
+‏  <h1>🌿 طمأنينة</h1>
+‏  <div class="card">
+‏    <h3>كيف حالك اليوم؟</h3>
+‏    <label>اختر حالتك:</label>
+‏    <select id="mood">
+‏      <option value="سعيد">سعيد 😊</option>
+‏      <option value="هادئ">هادئ 🌸</option>
+‏      <option value="قلق">قلق 😟</option>
+‏      <option value="حزين">حزين 😢</option>
+‏    </select>
+‏    <label>ملاحظة (اختياري):</label>
+‏    <input type="text" id="note" placeholder="أكتب شعورك هنا">
+‏    <button onclick="saveMood()">حفظ الحالة</button>
+‏    <p id="message"></p>
+‏    <p id="tip"></p>
+‏  </div>
+
+‏  <div class="card" id="history">
+‏    <h3>📊 سجل حالتك</h3>
+‏    <ul id="list"></ul>
+‏  </div>
+
+‏  <script>
+‏    let moodHistory = [];
+
+‏    const tips = {
+      "سعيد": "استمتع بلحظتك وشارك سعادتك مع من تحب 🌸",
+      "هادئ": "حافظ على هدوئك، وجرب التأمل لدقائق ✨",
+      "قلق": "خذ نفسًا عميقًا 3 مرات 🌿، ودوّن أفكارك لتهدئة ذهنك.",
+      "حزين": "تذكر أن المشاعر مؤقتة.. جرب الاستماع لشيء تحبه أو تحدث مع شخص تثق به 💙"
+    };
+
+‏    function saveMood() {
+‏      const moodSelect = document.getElementById("mood");
+‏      const mood = moodSelect.value; // مثال: "سعيد"
+‏      const moodText = moodSelect.options[moodSelect.selectedIndex].text; // مثال: "سعيد 😊"
+‏      const note = document.getElementById("note").value;
+‏      const date = new Date().toLocaleDateString("ar-SA");
+
+‏      const entry = `${date} - ${moodText}${note ? " | ملاحظة: " + note : ""}`;
+‏      moodHistory.push(entry);
+
+      // حفظ في localStorage
+‏      localStorage.setItem("moodHistory", JSON.stringify(moodHistory));
+
+      // تحديث الواجهة
+‏      document.getElementById("message").innerText = "✅ تم حفظ حالتك!";
+‏      document.getElementById("note").value = "";
+‏      document.getElementById("tip").innerText = tips[mood] || "";
+
+‏      updateHistory();
+    }
+
+‏    function updateHistory() {
+‏      const list = document.getElementById("list");
+‏      list.innerHTML = "";
+
+‏      moodHistory.slice().reverse().forEach(item => {
+‏        const li = document.createElement("li");
+‏        li.textContent = item;
+‏        list.appendChild(li);
+      });
+    }
+
+‏    function loadHistory() {
+‏      const stored = localStorage.getItem("moodHistory");
+‏      if (stored) {
+‏        moodHistory = JSON.parse(stored);
+‏        updateHistory();
+      }
+    }
+
+‏    window.onload = loadHistory;
+‏  </script>
+‏</body>
+‏</html>
